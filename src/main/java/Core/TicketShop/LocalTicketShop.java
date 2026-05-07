@@ -12,6 +12,7 @@ import Core.Models.Ticket;
 import Core.Services.CustomerService;
 import Core.Services.EventService;
 import Core.Services.TicketService;
+import IDGenerator.IDService.IDService;
 
 public class LocalTicketShop implements TicketShopInterface {
 
@@ -19,10 +20,12 @@ public class LocalTicketShop implements TicketShopInterface {
     private final CustomerService customerService;
     private final TicketService ticketService;
 
+
     public LocalTicketShop() {
-        this.ticketService = new TicketService();
-        this.customerService = new CustomerService(ticketService);
-        this.eventService = new EventService(ticketService);
+        IDService idService = new IDService(100000000000000000L, 999999999999999999L);
+        this.ticketService = new TicketService(idService);
+        this.customerService = new CustomerService(ticketService, idService);
+        this.eventService = new EventService(ticketService, idService);
         ticketService.setCustomerService(customerService);
         ticketService.setEventService(eventService);
 
@@ -45,7 +48,7 @@ public class LocalTicketShop implements TicketShopInterface {
     }
 
     @Override
-    public Event getEventById(UUID id) {
+    public Event getEventById(long id) {
         return eventService.getEventById(id);
     }
 
@@ -55,7 +58,7 @@ public class LocalTicketShop implements TicketShopInterface {
     }
 
     @Override
-    public void deleteEvent(UUID id) {
+    public void deleteEvent(long id) {
         eventService.deleteEvent(id);
     }
 
@@ -80,7 +83,7 @@ public class LocalTicketShop implements TicketShopInterface {
     }
 
     @Override
-    public Customer getCustomerById(UUID id) {
+    public Customer getCustomerById(long id) {
         return customerService.getCustomerById(id);
     }
 
@@ -90,7 +93,7 @@ public class LocalTicketShop implements TicketShopInterface {
     }
 
     @Override
-    public void deleteCustomer(UUID id) {
+    public void deleteCustomer(long id) {
         customerService.deleteCustomer(id);
     }
 
@@ -101,7 +104,7 @@ public class LocalTicketShop implements TicketShopInterface {
 
     // Ticket Operations
     @Override
-    public Ticket createTicket(UUID customerId, UUID eventId)
+    public Ticket createTicket(long customerId, long eventId)
         throws TicketException {
         return ticketService.createTicket(customerId, eventId);
     }
@@ -112,12 +115,12 @@ public class LocalTicketShop implements TicketShopInterface {
     }
 
     @Override
-    public Ticket getTicketById(UUID id) throws TicketException {
+    public Ticket getTicketById(long id) throws TicketException {
         return ticketService.getTicketById(id);
     }
 
     @Override
-    public void deleteTicket(UUID id) {
+    public void deleteTicket(long id) {
         ticketService.deleteTicket(id);
     }
 
@@ -127,7 +130,7 @@ public class LocalTicketShop implements TicketShopInterface {
     }
 
     @Override
-    public boolean verifyTicket(UUID id) {
+    public boolean verifyTicket(long id) {
         return ticketService.verifyTicket(id);
     }
 }

@@ -94,12 +94,12 @@ public class ConsoleClientTicketCommandHandler {
         }
 
         // Get event selection (index or UUID)
-        UUID eventId = null;
-        while (eventId == null) {
+        long eventId = 0;
+        while (eventId == 0) {
             System.out.print(
                     "Select event (number 1-" +
                             events.size() +
-                            ", UUID, or 'cancel'): "
+                            ", ID, or 'cancel'): "
             );
             String eventInput = scanner.nextLine().trim();
 
@@ -128,7 +128,8 @@ public class ConsoleClientTicketCommandHandler {
 
             // Try parsing as UUID
             try {
-                eventId = UUID.fromString(eventInput);
+//                eventId = UUID.fromString(eventInput);
+                eventId = Long.getLong(eventInput);
             } catch (IllegalArgumentException e) {
                 System.out.println(
                         "Invalid input. Please enter an index number, valid UUID, or 'cancel'."
@@ -155,12 +156,12 @@ public class ConsoleClientTicketCommandHandler {
         }
 
         // Get customer selection (index or UUID)
-        UUID customerId = null;
-        while (customerId == null) {
+        long customerId = 0;
+        while (customerId == 0) {
             System.out.print(
                     "Select customer (number 1-" +
                             customers.size() +
-                            ", UUID, or 'cancel'): "
+                            ", ID, or 'cancel'): "
             );
             String customerInput = scanner.nextLine().trim();
 
@@ -189,7 +190,7 @@ public class ConsoleClientTicketCommandHandler {
 
             // Try parsing as UUID
             try {
-                customerId = UUID.fromString(customerInput);
+                customerId = Long.getLong(customerInput);
             } catch (IllegalArgumentException e) {
                 System.out.println(
                         "Invalid input. Please enter an index number, valid UUID, or 'cancel'."
@@ -224,7 +225,7 @@ public class ConsoleClientTicketCommandHandler {
 
     private void readTicket() throws TicketException {
         System.out.print("Ticket ID: ");
-        UUID ticketId = UUID.fromString(scanner.nextLine().trim());
+        long ticketId = Long.getLong(scanner.nextLine().trim());
         Ticket ticket = shop.getTicketById(ticketId);
         if (ticket == null) {
             System.out.println("Ticket not found.");
@@ -235,7 +236,7 @@ public class ConsoleClientTicketCommandHandler {
 
     private void deleteTicket() throws TicketException {
         System.out.print("Ticket ID: ");
-        UUID ticketId = UUID.fromString(scanner.nextLine().trim());
+        long ticketId = Long.getLong(scanner.nextLine().trim());
         Ticket ticket = shop.getTicketById(ticketId);
         if (ticket == null) {
             System.out.println("Ticket not found.");
@@ -252,7 +253,7 @@ public class ConsoleClientTicketCommandHandler {
 
     private void verifyTicket() {
         System.out.print("Ticket ID: ");
-        UUID ticketId = UUID.fromString(scanner.nextLine().trim());
+        long ticketId = Long.getLong(scanner.nextLine().trim());
         if (shop.verifyTicket(ticketId)) {
             System.out.println("Ticket not found.");
         } else {

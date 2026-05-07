@@ -16,8 +16,8 @@ public class ConsoleFormatter {
                 ticket.getId(),
                 //formatEvent(ticket.getEvent()),
                 //formatCustomer(ticket.getCustomer()),
-                ticket.getEventId().toString(),
-                ticket.getCustomerId().toString(),
+                ticket.getEventId(),
+                ticket.getCustomerId(),
                 ticket
                         .getDateOfPurchase()
                         .format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))

@@ -6,14 +6,18 @@ import java.time.LocalDate;
 import java.util.*;
 import Core.Models.Customer;
 import Core.Models.Ticket;
+import IDGenerator.IDService.IDService;
+import IDGenerator.IDService.IDServiceInterface;
 
 public class CustomerService implements CustomerServiceInterface {
 
-    private final Map<UUID, Customer> customersById = new HashMap<>();
+    private final Map<Long, Customer> customersById = new HashMap<>();
     private final TicketService ticketService;
+    private final IDServiceInterface idService;
 
-    public CustomerService(TicketService ticketService) {
+    public CustomerService(TicketService ticketService, IDServiceInterface idService) {
         this.ticketService = ticketService;
+        this.idService = idService;
     }
 
     public Customer createCustomer(
@@ -21,21 +25,18 @@ public class CustomerService implements CustomerServiceInterface {
         String email,
         LocalDate dateOfBirth
     ) throws IllegalArgumentException {
-        UUID id = UUID.randomUUID();
+        long id = idService.getUnusedId();
         Customer customer = new Customer(id, username, email, dateOfBirth);
         saveCustomer(customer);
 
         return customer;
     }
 
-    public Customer getCustomerById(UUID id) throws CustomerException {
-        try {
-            if (!customersById.containsKey(id)) {
+    public Customer getCustomerById(long id) throws CustomerException {
+            if (id <= 0 || !customersById.containsKey(id)) {
                 throw CustomerException.customerDoesNotExist();
             }
-        } catch (NullPointerException e){
-            throw CustomerException.customerDoesNotExist();
-        }
+
         return clone(customersById.get(id));
     }
 
@@ -57,10 +58,10 @@ public class CustomerService implements CustomerServiceInterface {
         customersById.put(customer.getId(), customer);
     }
 
-    public void deleteCustomer(UUID id) throws IllegalArgumentException {
+    public void deleteCustomer(long id) throws IllegalArgumentException {
         Customer customer = customersById.remove(id);
         if (customer != null) {
-            List<UUID> ticketIds = new ArrayList<>(customer.getTicketsBought());
+            List<Long> ticketIds = new ArrayList<>(customer.getTicketsBought());
             ticketIds.forEach(ticketService::deleteTicket);
         }
     }

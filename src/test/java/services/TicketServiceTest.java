@@ -15,13 +15,17 @@ import Core.Models.Ticket;
 import Core.Services.CustomerService;
 import Core.Services.EventService;
 import Core.Services.TicketService;
+import IDGenerator.IDService.IDService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import javax.sound.midi.MidiSystem;
+
 class TicketServiceTest {
 
+    private final IDService idService = new IDService(10000L, 99999L);
     private TicketService ticketService;
     private CustomerService customerService;
     private EventService eventService;
@@ -32,9 +36,9 @@ class TicketServiceTest {
 
     @BeforeEach
     void setUp() {
-        this.ticketService = new TicketService();
-        this.customerService = new CustomerService(ticketService);
-        this.eventService = new EventService(ticketService);
+        this.ticketService = new TicketService(idService);
+        this.customerService = new CustomerService(ticketService, idService);
+        this.eventService = new EventService(ticketService, idService);
         ticketService.setCustomerService(customerService);
         ticketService.setEventService(eventService);
 
@@ -89,7 +93,7 @@ class TicketServiceTest {
             // Act & Assert
             CustomerException exception = assertThrows(
                 CustomerException.class,
-                () -> ticketService.createTicket(null, testEvent.getId())
+                () -> ticketService.createTicket(-1, testEvent.getId())
             );
             assertEquals(
                 CustomerException.customerDoesNotExist,
@@ -103,7 +107,7 @@ class TicketServiceTest {
             // Act & Assert
             EventException exception = assertThrows(
                 EventException.class,
-                () -> ticketService.createTicket(testCustomer.getId(), null)
+                () -> ticketService.createTicket(testCustomer.getId(), -1)
             );
             assertEquals(
                 EventException.eventDoesNotExist,
@@ -119,7 +123,7 @@ class TicketServiceTest {
             // Act & Assert
             CustomerException exception = assertThrows(
                 CustomerException.class,
-                () -> ticketService.createTicket(null, null)
+                () -> ticketService.createTicket(-1, -1)
             );
 
             assertEquals(
@@ -160,8 +164,7 @@ class TicketServiceTest {
                 testEvent.getId()
             );
 
-            UUID eventId = createdTicket.getEventId();
-
+            long eventId = createdTicket.getEventId();
             Event mappedEvent = eventService.getEventById(eventId);
 
             assert mappedEvent.getTicketsSold().contains(createdTicket.getId());
@@ -180,7 +183,7 @@ class TicketServiceTest {
                     testEvent2.getId()
             );
 
-            UUID eventId = createdTicketEvent1.getEventId();
+            long eventId = createdTicketEvent1.getEventId();
 
             Event mappedEvent = eventService.getEventById(eventId);
 
@@ -215,7 +218,7 @@ class TicketServiceTest {
                     testEvent.getId()
             );
 
-            UUID customerId = createdTicketCustomer1.getCustomerId();
+            long customerId = createdTicketCustomer1.getCustomerId();
 
             Customer mappedCustomer = customerService.getCustomerById(customerId);
 
@@ -248,7 +251,7 @@ class TicketServiceTest {
                 testEvent.getId()
             );
 
-            UUID eventId = createdTicket.getEventId();
+            long eventId = createdTicket.getEventId();
 
             eventService.deleteEvent(eventId);
 
@@ -472,7 +475,7 @@ class TicketServiceTest {
         @DisplayName("Should return Null for non-existent ticket ID")
         void shouldReturnNullForNonExistentTicketId() {
             // Arrange
-            UUID nonExistentId = UUID.randomUUID();
+            long nonExistentId = idService.getUnusedId();
 
             // Assert
             assertThrows(
@@ -503,7 +506,7 @@ class TicketServiceTest {
             // Act & Assert
             IllegalArgumentException exception = assertThrows(
                 IllegalArgumentException.class,
-                () -> ticketService.deleteTicket(null)
+                () -> ticketService.deleteTicket(-1)
             );
             assertEquals("Ticket ID cannot be null", exception.getMessage());
         }

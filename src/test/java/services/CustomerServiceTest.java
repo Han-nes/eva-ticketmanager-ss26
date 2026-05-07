@@ -10,6 +10,7 @@ import Core.Models.exceptions.CustomerException;
 import Core.Models.Customer;
 import Core.Services.CustomerService;
 import Core.Services.TicketService;
+import IDGenerator.IDService.IDService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -18,11 +19,13 @@ import org.junit.jupiter.api.Test;
 class CustomerServiceTest {
 
     private CustomerService customerService;
+    private final IDService idService = new IDService(10000L, 99999L);
+
     private Customer testCustomer;
 
     @BeforeEach
     void setUp() {
-        customerService = new CustomerService(new TicketService());
+        customerService = new CustomerService(new TicketService(idService), idService);
     }
 
     @Nested
@@ -226,7 +229,7 @@ class CustomerServiceTest {
         @DisplayName("Should not create Customer via Update")
         void shouldNotCreateCustomerViaUpdate() {
             // Arrange
-            Customer customer = new Customer(UUID.randomUUID(), "Name", "mail@mail.de", LocalDate.now().minusYears(20));
+            Customer customer = new Customer(idService.getUnusedId(), "Name", "mail@mail.de", LocalDate.now().minusYears(20));
 
             // Act
 
@@ -268,7 +271,7 @@ class CustomerServiceTest {
         @DisplayName("Should return Null for non-existent customer ID")
         void shouldReturnNullForNonExistentCustomerId() {
             // Arrange
-            UUID nonExistentId = UUID.randomUUID();
+            long nonExistentId = -1;
 
             // Assert
             assertThrows(

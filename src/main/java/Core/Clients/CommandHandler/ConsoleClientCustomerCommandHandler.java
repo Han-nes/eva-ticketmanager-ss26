@@ -91,7 +91,7 @@ public class ConsoleClientCustomerCommandHandler {
 
     public void readCustomer() {
         System.out.print("Customer ID: ");
-        UUID id = UUID.fromString(scanner.nextLine().trim());
+        long id = Long.getLong(scanner.nextLine().trim());
 
         Customer customer = shop.getCustomerById(id);
         if (customer == null) {
@@ -105,7 +105,7 @@ public class ConsoleClientCustomerCommandHandler {
 
     private void updateCustomer() {
         System.out.print("Customer ID: ");
-        UUID id = UUID.fromString(scanner.nextLine().trim());
+        long id = Long.getLong(scanner.nextLine().trim());
 
         Customer existingCustomer = shop.getCustomerById(id);
         if (existingCustomer == null) {
@@ -129,7 +129,7 @@ public class ConsoleClientCustomerCommandHandler {
 
     private void deleteCustomer() {
         System.out.print("Customer ID: ");
-        UUID id = UUID.fromString(scanner.nextLine().trim());
+        long id = Long.getLong(scanner.nextLine().trim());
 
         Customer existingCustomer = shop.getCustomerById(id);
         if (existingCustomer == null) {

@@ -3,21 +3,21 @@ package Core.Services;
 import Core.Models.exceptions.EventException;
 import Core.Interfaces.EventServiceInterface;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.*;
 import Core.Models.Event;
 import Core.Models.Ticket;
+import IDGenerator.IDService.IDService;
+import IDGenerator.IDService.IDServiceInterface;
 
 public class EventService implements EventServiceInterface {
 
-    private final Map<UUID, Event> eventsById = new ConcurrentHashMap<>();
+    private final Map<Long, Event> eventsById = new HashMap<>();
     private final TicketService ticketService;
+    private final IDServiceInterface idService;
 
-    public EventService(TicketService ticketService) {
+    public EventService(TicketService ticketService, IDServiceInterface idService) {
         this.ticketService = ticketService;
+        this.idService = idService;
     }
 
     public Event createEvent(
@@ -28,7 +28,7 @@ public class EventService implements EventServiceInterface {
     ) throws EventException {
 
         Event event = new Event(
-            UUID.randomUUID(),
+            idService.getUnusedId(),
             name,
             location,
             time,
@@ -53,14 +53,10 @@ public class EventService implements EventServiceInterface {
     }
 
     @Override
-    public Event getEventById(UUID id) {
-        try{
-            if(!eventsById.containsKey(id)){
+    public Event getEventById(long id) {
+            if(id <= 0 || !eventsById.containsKey(id)){
                 throw EventException.eventDoesNotExist();
             }
-          } catch (NullPointerException e){
-                throw EventException.eventDoesNotExist();
-        }
         return clone(eventsById.get(id));
     }
 
@@ -83,10 +79,10 @@ public class EventService implements EventServiceInterface {
 
 
     @Override
-    public void deleteEvent(UUID id) {
+    public void deleteEvent(long id) {
         Event deletedEvent = eventsById.remove(id);
         if (deletedEvent != null) {
-            List<UUID> ticketIds = new ArrayList<>(deletedEvent.getTicketsSold());
+            List<Long> ticketIds = new ArrayList<>(deletedEvent.getTicketsSold());
             ticketIds.forEach(ticketService::deleteTicket);
         }
     }

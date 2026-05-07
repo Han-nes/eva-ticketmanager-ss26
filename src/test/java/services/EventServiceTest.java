@@ -10,19 +10,20 @@ import Core.Models.exceptions.EventException;
 import Core.Models.Event;
 import Core.Services.EventService;
 import Core.Services.TicketService;
+import IDGenerator.IDService.IDService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 class EventServiceTest {
-
+    private final IDService idService = new IDService(10000L, 99999L);
     private EventService eventService;
     private Event testEvent;
 
     @BeforeEach
     void setUp() {
-        this.eventService = new EventService(new TicketService());
+        this.eventService = new EventService(new TicketService(idService), idService);
     }
 
     @Nested
@@ -109,7 +110,7 @@ class EventServiceTest {
         @DisplayName("Should return Null for non-existent event ID")
         void shouldReturnNullForNonExistentEventId() {
             // Arrange
-            UUID nonExistentId = UUID.randomUUID();
+            long nonExistentId = -1;
 
             //Act and Assert
             assertThrows(
@@ -300,7 +301,7 @@ class EventServiceTest {
         @DisplayName("Shouldn't be able to Insert Ticket via Update")
         void shouldNotInsertTicketViaUpdate(){
             // Arrange
-            Event newEvent = new Event(UUID.randomUUID(), "testEvent" , "testLocation", LocalDateTime.now(), 100);
+            Event newEvent = new Event(idService.getUnusedId(), "testEvent" , "testLocation", LocalDateTime.now(), 100);
 
             // Act
 

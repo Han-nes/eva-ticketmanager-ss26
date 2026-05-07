@@ -103,7 +103,7 @@ public class ConsoleClientEventCommandHandler {
         System.out.print("Event ID: ");
         String idStr = scanner.nextLine().trim();
         try {
-            UUID id = UUID.fromString(idStr);
+            long id = Long.getLong(idStr);
             Event event = shop.getEventById(id);
             if (event == null) {
                 System.out.println("Event not found");
@@ -119,7 +119,7 @@ public class ConsoleClientEventCommandHandler {
         System.out.print("Event ID: ");
         String idStr = scanner.nextLine().trim();
         try {
-            UUID id = UUID.fromString(idStr);
+            long id = Long.getLong(idStr);
             Event event = shop.getEventById(id);
             if (event == null) {
                 System.out.println("Event not found");
@@ -159,7 +159,7 @@ public class ConsoleClientEventCommandHandler {
         System.out.print("Enter event ID: ");
         String idStr = scanner.nextLine().trim();
         try {
-            UUID id = UUID.fromString(idStr);
+            Long id = Long.getLong(idStr);
             shop.deleteEvent(id);
             System.out.println("Event deleted");
         } catch (IllegalArgumentException e) {

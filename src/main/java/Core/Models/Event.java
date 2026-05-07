@@ -9,15 +9,16 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class Event {
 
-    private final UUID id;
+    //private final UUID id;
+    private final long id;
     private String name;
     private String location;
     private LocalDateTime time;
     private AtomicInteger ticketsAvailable;
-    private final List<UUID> ticketsSold = new ArrayList<>();
+    private final List<Long> ticketsSold = new ArrayList<>();
 
     public Event(
-        UUID id,
+        long id,
         String name,
         String location,
         LocalDateTime time,
@@ -30,7 +31,7 @@ public class Event {
         this.ticketsAvailable = new AtomicInteger(ticketsAvailable);
     }
 
-    public UUID getId() {
+    public long getId() {
         return id;
     }
 
@@ -46,7 +47,7 @@ public class Event {
         return time;
     }
 
-    public List<UUID> getTicketsSold() {
+    public List<Long> getTicketsSold() {
         return this.ticketsSold;
     }
 
@@ -54,7 +55,7 @@ public class Event {
         return ticketsAvailable;
     }
 
-    public void ticketDeleted(UUID ticketId) {
+    public void ticketDeleted(long ticketId) {
         this.ticketsSold.remove(ticketId);
         this.ticketsAvailable.addAndGet(1);
     }
@@ -75,7 +76,7 @@ public class Event {
         this.ticketsAvailable = new AtomicInteger(ticketsAvailable);
     }
 
-    public void addTicketToTicketsSold(UUID ticketId){
+    public void addTicketToTicketsSold(long ticketId){
         this.ticketsSold.add(ticketId);
     }
 
@@ -93,7 +94,7 @@ public class Event {
         if (this == objectToCompare) return true;
         if(objectToCompare == null || getClass() != objectToCompare.getClass()) return false;
         Event eventToCompare = (Event) objectToCompare;
-        return eventToCompare.getId().equals(this.getId()) &&
+        return eventToCompare.getId() == this.getId() &&
                 eventToCompare.getName().equals(this.name) &&
                 eventToCompare.getLocation().equals(this.location) &&
                 eventToCompare.getTime().equals(this.time) &&

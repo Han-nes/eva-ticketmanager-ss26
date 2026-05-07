@@ -6,11 +6,11 @@ import java.util.UUID;
 import Core.Models.Ticket;
 
 public interface TicketServiceInterface {
-    Ticket createTicket(UUID customerId, UUID eventId)
+    Ticket createTicket(long customerId, long eventId)
         throws IllegalArgumentException, TicketException;
-    Ticket getTicketById(UUID id) throws TicketException;
+    Ticket getTicketById(long id) throws TicketException;
     List<Ticket> getAllTickets();
-    void deleteTicket(UUID id) throws IllegalArgumentException;
+    void deleteTicket(long id) throws IllegalArgumentException;
     void deleteAllTickets();
-    boolean verifyTicket(UUID id);
+    boolean verifyTicket(long id);
 }

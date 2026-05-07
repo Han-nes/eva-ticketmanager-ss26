@@ -1,5 +1,6 @@
 package Core.Models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -8,14 +9,16 @@ import java.util.UUID;
 
 public class Customer {
 
-    private final UUID id;
+    //private final UUID id;
+    private final long id;
     private String username;
     private String email;
     private LocalDate dateOfBirth;
-    private final List<UUID> ticketsBought = new ArrayList<>();
+    private final List<Long> ticketsBought = new ArrayList<>();
 
     public Customer(
-        UUID id,
+        //UUID id,
+        long id,
         String username,
         String email,
         LocalDate dateOfBirth
@@ -26,7 +29,7 @@ public class Customer {
         this.dateOfBirth = dateOfBirth;
     }
 
-    public UUID getId() {
+    public long getId() {
         return id;
     }
 
@@ -42,7 +45,8 @@ public class Customer {
         return dateOfBirth;
     }
 
-    public List<UUID> getTicketsBought() {
+    @JsonIgnore
+    public List<Long> getTicketsBought() {
         return this.ticketsBought;
     }
 
@@ -58,7 +62,7 @@ public class Customer {
         this.dateOfBirth = dateOfBirth;
     }
 
-    public void ticketDeleted(UUID ticketId) {
+    public void ticketDeleted(long ticketId) {
         this.ticketsBought.remove(ticketId);
     }
 
@@ -73,7 +77,7 @@ public class Customer {
         if (this == objectToCompare) return true;
         if(objectToCompare == null || getClass() != objectToCompare.getClass()) return false;
         Customer customerToCompare = (Customer) objectToCompare;
-        return customerToCompare.getId().equals(this.getId()) &&
+        return customerToCompare.getId() == this.getId() &&
                 customerToCompare.getUsername().equals(this.getUsername()) &&
                 customerToCompare.getEmail().equals(this.getEmail()) &&
                 customerToCompare.getDateOfBirth().equals(this.getDateOfBirth()) &&

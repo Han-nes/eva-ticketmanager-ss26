@@ -6,16 +6,17 @@ import java.util.UUID;
 
 public class Ticket {
 
-    private final UUID id;
+    //private final UUID id;
+    private final long id;
     private final LocalDate dateOfPurchase;
-    private final UUID customerId;
-    private final UUID eventId;
+    private final long customerId;
+    private final long eventId;
 
     public Ticket(
-            UUID id,
+            long id,
             LocalDate dateOfPurchase,
-            UUID customerId,
-            UUID eventId
+            long customerId,
+            long eventId
     ) {
         this.id = id;
         this.dateOfPurchase = dateOfPurchase;
@@ -23,7 +24,7 @@ public class Ticket {
         this.eventId = eventId;
     }
 
-    public UUID getId() {
+    public long getId() {
         return id;
     }
 
@@ -31,11 +32,11 @@ public class Ticket {
         return dateOfPurchase;
     }
 
-    public UUID getCustomerId() {
+    public long getCustomerId() {
         return customerId;
     }
 
-    public UUID getEventId() {
+    public long getEventId() {
         return eventId;
     }
 
@@ -49,10 +50,10 @@ public class Ticket {
         if (this == objectToCompare) return true;
         if(objectToCompare == null || getClass() != objectToCompare.getClass()) return false;
         Ticket ticketToCompare = (Ticket) objectToCompare;
-        return ticketToCompare.getId().equals(this.getId()) &&
+        return ticketToCompare.getId() == this.getId() &&
                 ticketToCompare.getDateOfPurchase().equals(this.getDateOfPurchase()) &&
-                ticketToCompare.getCustomerId().equals(this.getCustomerId()) &&
-                ticketToCompare.getEventId().equals(this.getEventId());
+                ticketToCompare.getCustomerId() == this.getCustomerId() &&
+                ticketToCompare.getEventId() == this.getEventId();
     }
 
 

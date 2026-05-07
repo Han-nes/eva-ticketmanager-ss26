@@ -13,22 +13,22 @@ import Core.Models.Ticket;
 public interface TicketShopInterface {
     List<Event> getAllEvents();
     Event createEvent(String name, String location, LocalDateTime time, int ticketsAvailable);
-    Event getEventById(UUID id);
+    Event getEventById(long id);
     void updateEvent(Event event);
-    void deleteEvent(UUID id);
+    void deleteEvent(long id);
     void deleteAllEvents();
 
     List<Customer> getAllCustomers();
     Customer createCustomer(String username, String email, LocalDate dateOfBirth);
-    Customer getCustomerById(UUID id);
+    Customer getCustomerById(long id);
     void updateCustomer(Customer customer);
-    void deleteCustomer(UUID id);
+    void deleteCustomer(long id);
     void deleteAllCustomers();
 
     List<Ticket> getAllTickets();
-    Ticket createTicket(UUID customerId, UUID eventId) throws TicketException;
-    Ticket getTicketById(UUID id) throws TicketException;
-    void deleteTicket(UUID id);
+    Ticket createTicket(long customerId, long eventId) throws TicketException;
+    Ticket getTicketById(long id) throws TicketException;
+    void deleteTicket(long id);
     void deleteAllTickets();
-    boolean verifyTicket(UUID id);
+    boolean verifyTicket(long id);
 }
