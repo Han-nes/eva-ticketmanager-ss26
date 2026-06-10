@@ -1,14 +1,13 @@
-package Core.Interfaces;
+package core.interfaces;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.UUID;
 
-import Core.Models.exceptions.TicketException;
-import Core.Models.Customer;
-import Core.Models.Event;
-import Core.Models.Ticket;
+import core.models.exceptions.TicketException;
+import core.models.Customer;
+import core.models.Event;
+import core.models.Ticket;
 
 public interface TicketShopInterface {
     List<Event> getAllEvents();
@@ -30,5 +29,4 @@ public interface TicketShopInterface {
     Ticket getTicketById(long id) throws TicketException;
     void deleteTicket(long id);
     void deleteAllTickets();
-    boolean verifyTicket(long id);
 }

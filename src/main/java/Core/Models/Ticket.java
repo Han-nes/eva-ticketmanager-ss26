@@ -1,8 +1,7 @@
-package Core.Models;
+package core.models;
 
 import java.time.LocalDate;
 import java.util.Objects;
-import java.util.UUID;
 
 public class Ticket {
 

@@ -1,10 +1,9 @@
-package Core.Interfaces;
+package core.interfaces;
 
-import Core.Models.Customer;
+import core.models.Customer;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.UUID;
 
 public interface CustomerServiceInterface {
     Customer createCustomer(String username, String email, LocalDate dateOfBirth) throws IllegalArgumentException;

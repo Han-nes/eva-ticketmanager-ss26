@@ -1,18 +1,18 @@
-package Core.TicketShop;
+package core.ticketShop;
 
-import Core.Models.exceptions.TicketException;
-import Core.Interfaces.TicketShopInterface;
+import core.models.exceptions.TicketException;
+import core.interfaces.TicketShopInterface;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.UUID;
-import Core.Models.Customer;
-import Core.Models.Event;
-import Core.Models.Ticket;
-import Core.Services.CustomerService;
-import Core.Services.EventService;
-import Core.Services.TicketService;
-import IDGenerator.IDService.IDService;
+
+import core.models.Customer;
+import core.models.Event;
+import core.models.Ticket;
+import core.services.CustomerService;
+import core.services.EventService;
+import core.services.TicketService;
+import idGenerator.idService.IDService;
 
 public class LocalTicketShop implements TicketShopInterface {
 
@@ -127,10 +127,5 @@ public class LocalTicketShop implements TicketShopInterface {
     @Override
     public void deleteAllTickets() {
         ticketService.deleteAllTickets();
-    }
-
-    @Override
-    public boolean verifyTicket(long id) {
-        return ticketService.verifyTicket(id);
     }
 }

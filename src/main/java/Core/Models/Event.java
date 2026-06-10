@@ -1,15 +1,13 @@
-package Core.Models;
+package core.models;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class Event {
 
-    //private final UUID id;
     private final long id;
     private String name;
     private String location;
@@ -28,7 +26,7 @@ public class Event {
         this.name = name;
         this.location = location;
         this.time = time;
-        this.ticketsAvailable = new AtomicInteger(ticketsAvailable);
+        setTicketsAvailable(ticketsAvailable);
     }
 
     public long getId() {
@@ -51,13 +49,19 @@ public class Event {
         return this.ticketsSold;
     }
 
-    public AtomicInteger getTicketsAvailable() {
-        return ticketsAvailable;
+    public int getTicketsAvailable() {
+        return ticketsAvailable.get();
+        //return ticketsAvailable.get();
     }
 
     public void ticketDeleted(long ticketId) {
         this.ticketsSold.remove(ticketId);
-        this.ticketsAvailable.addAndGet(1);
+        setTicketsAvailable(getTicketsAvailable() + 1);
+    }
+
+    public void ticketSold(long ticketId){
+        this.ticketsSold.add(ticketId);
+        setTicketsAvailable(getTicketsAvailable() - 1);
     }
 
     public void setName(String name) {
@@ -74,14 +78,11 @@ public class Event {
 
     public void setTicketsAvailable(int ticketsAvailable) {
         this.ticketsAvailable = new AtomicInteger(ticketsAvailable);
-    }
-
-    public void addTicketToTicketsSold(long ticketId){
-        this.ticketsSold.add(ticketId);
+        //this.ticketsAvailable = new AtomicInteger(ticketsAvailable);
     }
 
     public boolean hasAvailableTickets() {
-        return ticketsAvailable.get() > 0;
+        return getTicketsAvailable() > 0;
     }
 
     @Override
@@ -98,7 +99,7 @@ public class Event {
                 eventToCompare.getName().equals(this.name) &&
                 eventToCompare.getLocation().equals(this.location) &&
                 eventToCompare.getTime().equals(this.time) &&
-                (eventToCompare.getTicketsAvailable().get() == this.ticketsAvailable.get()) &&
+                (eventToCompare.getTicketsAvailable() == this.getTicketsAvailable()) &&
                 eventToCompare.getTicketsSold().equals(this.ticketsSold);
     }
 

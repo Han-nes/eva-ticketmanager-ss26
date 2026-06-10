@@ -1,14 +1,13 @@
-package Core.Clients.CommandHandler;
+package core.clients.commandHandler;
 
-import Core.Interfaces.TicketShopInterface;
-import Core.Models.Event;
+import core.interfaces.TicketShopInterface;
+import core.models.Event;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Scanner;
-import java.util.UUID;
 
 public class ConsoleClientEventCommandHandler {
 

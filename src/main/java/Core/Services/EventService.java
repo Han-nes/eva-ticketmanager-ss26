@@ -1,17 +1,18 @@
-package Core.Services;
+package core.services;
 
-import Core.Models.exceptions.EventException;
-import Core.Interfaces.EventServiceInterface;
+import core.models.exceptions.EventException;
+import core.interfaces.EventServiceInterface;
 import java.time.LocalDateTime;
 import java.util.*;
-import Core.Models.Event;
-import Core.Models.Ticket;
-import IDGenerator.IDService.IDService;
-import IDGenerator.IDService.IDServiceInterface;
+import java.util.concurrent.ConcurrentHashMap;
+
+import core.models.Event;
+import core.models.Ticket;
+import idGenerator.idService.IDServiceInterface;
 
 public class EventService implements EventServiceInterface {
 
-    private final Map<Long, Event> eventsById = new HashMap<>();
+    private final Map<Long, Event> eventsById = new ConcurrentHashMap<>();
     private final TicketService ticketService;
     private final IDServiceInterface idService;
 
@@ -41,8 +42,7 @@ public class EventService implements EventServiceInterface {
 
     public void ticketSoldForEvent(Ticket ticket) {
         Event event = getEventById(ticket.getEventId());
-        event.getTicketsAvailable().decrementAndGet();
-        event.addTicketToTicketsSold(ticket.getId());
+        event.ticketSold(ticket.getId());
         eventsById.put(event.getId(), event);
     }
 
@@ -68,7 +68,7 @@ public class EventService implements EventServiceInterface {
 
     private void validateUpdatedEvent(Event event){
         Event eventBeforeUpdate = getEventById(event.getId());
-        if (event.getTicketsAvailable().get() < eventBeforeUpdate.getTicketsAvailable().get()) {
+        if (event.getTicketsAvailable() < eventBeforeUpdate.getTicketsAvailable()) {
             throw EventException.shouldNotReduceAvailableTicketsWithUpdate();
         }
 
@@ -76,7 +76,6 @@ public class EventService implements EventServiceInterface {
             throw EventException.cantSetEventTimeIntoPast();
         }
     }
-
 
     @Override
     public void deleteEvent(long id) {
@@ -89,7 +88,16 @@ public class EventService implements EventServiceInterface {
 
     @Override
     public List<Event> getAllEvents() {
-        return new ArrayList<>(eventsById.values());
+        List<Event> allEvents = new ArrayList<>();
+        for(long eventId : eventsById.keySet()){
+            try {
+                allEvents.add(getEventById(eventId));
+            } catch (EventException eventException){
+                System.out.println("Fehler beim Ziehen eines Events");
+            }
+        }
+        return allEvents;
+        //return new ArrayList<>(eventsById.values());
     }
 
     @Override
@@ -104,7 +112,7 @@ public class EventService implements EventServiceInterface {
     }
 
     private void validateEvent(Event event){
-        if (event.getTicketsAvailable().get() < 0) {
+        if (event.getTicketsAvailable() < 0) {
             throw EventException.negativeTicketsAvailable();
         }
     }
@@ -115,7 +123,7 @@ public class EventService implements EventServiceInterface {
                 event.getName(),
                 event.getLocation(),
                 event.getTime(),
-                event.getTicketsAvailable().get()
+                event.getTicketsAvailable()
         );
         clonedEvent.getTicketsSold().addAll(event.getTicketsSold());
         return clonedEvent;

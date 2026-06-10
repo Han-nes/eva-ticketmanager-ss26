@@ -1,17 +1,18 @@
-package Core.Services;
+package core.services;
 
-import Core.Models.exceptions.CustomerException;
-import Core.Interfaces.CustomerServiceInterface;
+import core.models.exceptions.CustomerException;
+import core.interfaces.CustomerServiceInterface;
 import java.time.LocalDate;
 import java.util.*;
-import Core.Models.Customer;
-import Core.Models.Ticket;
-import IDGenerator.IDService.IDService;
-import IDGenerator.IDService.IDServiceInterface;
+import java.util.concurrent.ConcurrentHashMap;
+
+import core.models.Customer;
+import core.models.Ticket;
+import idGenerator.idService.IDServiceInterface;
 
 public class CustomerService implements CustomerServiceInterface {
 
-    private final Map<Long, Customer> customersById = new HashMap<>();
+    private final Map<Long, Customer> customersById = new ConcurrentHashMap<>();
     private final TicketService ticketService;
     private final IDServiceInterface idService;
 
@@ -67,7 +68,16 @@ public class CustomerService implements CustomerServiceInterface {
     }
 
     public List<Customer> getAllCustomers() {
-        return new ArrayList<>(customersById.values());
+        List<Customer> allCustomers = new ArrayList<>();
+        for(long customerId : customersById.keySet()){
+            try {
+                allCustomers.add(getCustomerById(customerId));
+            } catch (CustomerException customerException){
+                System.out.println("Fehler beim Ziehen eines Kunden");
+            }
+        }
+        return allCustomers;
+        //return new ArrayList<>(customersById.values());
     }
 
     public void deleteAllCustomers() {

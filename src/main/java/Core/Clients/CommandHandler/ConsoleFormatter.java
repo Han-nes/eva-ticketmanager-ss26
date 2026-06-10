@@ -1,8 +1,8 @@
-package Core.Clients.CommandHandler;
+package core.clients.commandHandler;
 
-import Core.Models.Customer;
-import Core.Models.Event;
-import Core.Models.Ticket;
+import core.models.Customer;
+import core.models.Event;
+import core.models.Ticket;
 
 import java.time.format.DateTimeFormatter;
 
@@ -41,7 +41,7 @@ public class ConsoleFormatter {
                 event.getName(),
                 event.getLocation(),
                 event.getTime().format(DATE_TIME_FORMATTER),
-                event.getTicketsAvailable().get()
+                event.getTicketsAvailable()
         );
     }
 }

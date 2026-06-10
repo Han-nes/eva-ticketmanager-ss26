@@ -1,11 +1,10 @@
-package Core.Models.exceptions;
+package core.models.exceptions;
 
 public class EventException extends RuntimeException {
     public static final String negativeTicketsAvailable = "Number of tickets available must not be negative.";
     public static final String eventDoesNotExist = "Event does not exist";
     public static final String shouldNotReduceAvailableTicketsWithUpdate = "Must not reduce available ticket contingent of existing event.";
     public static final String cantSetEventTimeIntoPast = "DateTime of Event can't be set into the past";
-    public static final String ticketsSoldCantBeUpdated = "Can't change the sold Tickets via Update";
 
     public EventException(String message) {
         super(message);

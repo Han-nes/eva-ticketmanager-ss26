@@ -1,6 +1,6 @@
-package Core;
+package core;
 
-import Core.Clients.ConsoleClientLocal;
+import core.clients.ConsoleClientLocal;
 
 class ClientMainConsole {
 

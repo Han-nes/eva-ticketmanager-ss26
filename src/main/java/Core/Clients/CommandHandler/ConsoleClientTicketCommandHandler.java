@@ -1,14 +1,13 @@
-package Core.Clients.CommandHandler;
+package core.clients.commandHandler;
 
-import Core.Interfaces.TicketShopInterface;
-import Core.Models.Customer;
-import Core.Models.Event;
-import Core.Models.Ticket;
-import Core.Models.exceptions.TicketException;
+import core.interfaces.TicketShopInterface;
+import core.models.Customer;
+import core.models.Event;
+import core.models.Ticket;
+import core.models.exceptions.TicketException;
 
 import java.util.List;
 import java.util.Scanner;
-import java.util.UUID;
 
 public class ConsoleClientTicketCommandHandler {
 
@@ -48,9 +47,6 @@ public class ConsoleClientTicketCommandHandler {
                         break;
                     case "clear", "cl":
                         deleteAllTickets();
-                        break;
-                    case "validate", "v":
-                        verifyTicket();
                         break;
                     default:
                         System.out.println(
@@ -250,16 +246,4 @@ public class ConsoleClientTicketCommandHandler {
         shop.deleteAllTickets();
         System.out.println("All tickets deleted successfully.");
     }
-
-    private void verifyTicket() {
-        System.out.print("Ticket ID: ");
-        long ticketId = Long.getLong(scanner.nextLine().trim());
-        if (shop.verifyTicket(ticketId)) {
-            System.out.println("Ticket not found.");
-        } else {
-            System.out.println("Ticket is valid.");
-        }
-    }
-
-
 }

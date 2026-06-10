@@ -1,10 +1,9 @@
-package Core.Interfaces;
+package core.interfaces;
 
-import Core.Models.Event;
+import core.models.Event;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.UUID;
 
 public interface EventServiceInterface {
     Event createEvent(String name, String location, LocalDateTime time, int ticketsAvailable) throws IllegalArgumentException;

@@ -2,26 +2,24 @@ package services;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import Core.Models.exceptions.CustomerException;
-import Core.Models.exceptions.EventException;
-import Core.Models.exceptions.TicketException;
+import core.models.exceptions.CustomerException;
+import core.models.exceptions.EventException;
+import core.models.exceptions.TicketException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.UUID;
-import Core.Models.Customer;
-import Core.Models.Event;
-import Core.Models.Ticket;
-import Core.Services.CustomerService;
-import Core.Services.EventService;
-import Core.Services.TicketService;
-import IDGenerator.IDService.IDService;
+
+import core.models.Customer;
+import core.models.Event;
+import core.models.Ticket;
+import core.services.CustomerService;
+import core.services.EventService;
+import core.services.TicketService;
+import idGenerator.idService.IDService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-
-import javax.sound.midi.MidiSystem;
 
 class TicketServiceTest {
 
@@ -116,9 +114,7 @@ class TicketServiceTest {
         }
 
         @Test
-        @DisplayName(
-            "Should throw exception when both customer and event are null"
-        )
+        @DisplayName("Should throw exception when both customer and event are null")
         void shouldThrowExceptionWhenBothCustomerAndEventAreNull() {
             // Act & Assert
             CustomerException exception = assertThrows(
@@ -130,7 +126,36 @@ class TicketServiceTest {
                     CustomerException.customerDoesNotExist,
                     exception.getMessage()
             );
+        }
 
+        @Test
+        @DisplayName("Should throw exception when customer is not stored")
+        void shouldThrowExceptionWhenCustomerIsNotStored() {
+            // Act & Assert
+            CustomerException exception = assertThrows(
+                    CustomerException.class,
+                    () -> ticketService.createTicket(111111111111111111L, testEvent.getId())
+            );
+
+            assertEquals(
+                    CustomerException.customerDoesNotExist,
+                    exception.getMessage()
+            );
+        }
+
+        @Test
+        @DisplayName("Should throw exception when event is not stored")
+        void shouldThrowExceptionWhenEventIsNotStored() {
+            // Act & Assert
+            EventException exception = assertThrows(
+                    EventException.class,
+                    () -> ticketService.createTicket(testCustomer.getId(), 111111111111111111L)
+            );
+
+            assertEquals(
+                    EventException.eventDoesNotExist,
+                    exception.getMessage()
+            );
         }
 
         @Test
@@ -298,9 +323,7 @@ class TicketServiceTest {
         }
 
         @Test
-        @DisplayName(
-            "Should delete all ticket associations in customers when deleting all events"
-        )
+        @DisplayName("Should delete all ticket associations in customers when deleting all events")
         void shouldDeleteAllTicketAssociationsInCustomersWhenDeletingAllEvents()
             throws TicketException {
             Event newTestEvent = eventService.createEvent(
@@ -335,9 +358,7 @@ class TicketServiceTest {
         }
 
         @Test
-        @DisplayName(
-            "Should delete corresponding ticketBought by customer when deleting ticket"
-        )
+        @DisplayName("Should delete corresponding ticketBought by customer when deleting ticket")
         void shouldDeleteCorrespondingTicketBoughtByCustomerWhenDeletingTicket()
             throws TicketException {
             // Arrange
@@ -350,15 +371,11 @@ class TicketServiceTest {
             ticketService.deleteTicket(createdTicket.getId());
 
             // Assert
-            assertFalse(
-                testCustomer.getTicketsBought().contains(createdTicket.getId())
-            );
+            assertFalse(customerService.getCustomerById(testCustomer.getId()).getTicketsBought().contains(createdTicket.getId()));
         }
 
         @Test
-        @DisplayName(
-            "Should delete corresponding ticketSold of event for deleted ticket"
-        )
+        @DisplayName("Should delete corresponding ticketSold of event for deleted ticket")
         void shouldDeleteCorrespondingTicketSoldOfEventWhenDeletingTicket()
             throws TicketException {
             // Arrange
@@ -371,7 +388,7 @@ class TicketServiceTest {
             ticketService.deleteTicket(createdTicket.getId());
 
             // Assert
-            assertFalse(testEvent.getTicketsSold().contains(createdTicket.getId()));
+            assertFalse(eventService.getEventById(testEvent.getId()).getTicketsSold().contains(createdTicket.getId()));
         }
 
         @Test
@@ -379,13 +396,13 @@ class TicketServiceTest {
         void shouldReduceAvailableTicketAmountWhenBuyingNewTickets()
             throws TicketException {
             // Arrange
-            int initialTicketCount = testEvent.getTicketsAvailable().get();
+            int initialTicketCount = testEvent.getTicketsAvailable();
 
             // Act
             ticketService.createTicket(testCustomer.getId(), testEvent.getId());
 
             // Assert
-            assertTrue(eventService.getEventById(testEvent.getId()).getTicketsAvailable().get() < initialTicketCount);
+            assertTrue(eventService.getEventById(testEvent.getId()).getTicketsAvailable() < initialTicketCount);
         }
 
         @Test
@@ -423,9 +440,7 @@ class TicketServiceTest {
         }
 
         @Test
-        @DisplayName(
-            "Should increase availableTicketAmount when deleting ticket for event"
-        )
+        @DisplayName("Should increase availableTicketAmount when deleting ticket for event")
         void shouldIncreaseAvailableTicketAmountWhenDeletingTicketForEvent()
             throws TicketException {
             // Arrange
@@ -433,13 +448,13 @@ class TicketServiceTest {
                 testCustomer.getId(),
                 testEvent.getId()
             );
-            int availableTickets = eventService.getEventById(testEvent.getId()).getTicketsAvailable().get();
+            int availableTickets = eventService.getEventById(testEvent.getId()).getTicketsAvailable();
 
             // Act
             ticketService.deleteTicket(newTicket.getId());
 
             // Assert
-            assertEquals(testEvent.getTicketsAvailable().get(), availableTickets + 1);
+            assertEquals(testEvent.getTicketsAvailable(), availableTickets + 1);
         }
     }
 
@@ -548,6 +563,26 @@ class TicketServiceTest {
 
             // Assert
             assertTrue(tickets.isEmpty());
+        }
+    }
+
+    @Nested
+    @DisplayName("Logic Tests")
+    class LogicTests{
+
+        @Test
+        @DisplayName("CustomerShouldBeAbleToBuyAtLeastFiveTicketsTotal")
+        void shouldBeAbleToBuyAtLeastFiveTicketsTotal(){
+            try {
+                ticketService.createTicket(testCustomer.getId(), testEvent.getId());
+                ticketService.createTicket(testCustomer.getId(), testEvent.getId());
+                ticketService.createTicket(testCustomer.getId(), testEvent.getId());
+                ticketService.createTicket(testCustomer.getId(), testEvent.getId());
+                ticketService.createTicket(testCustomer.getId(), testEvent.getId());
+                assertDoesNotThrow(() -> ticketService.createTicket(testCustomer.getId(), testEvent2.getId()));
+            } catch (TicketException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 }

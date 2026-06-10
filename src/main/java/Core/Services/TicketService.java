@@ -1,20 +1,20 @@
-package Core.Services;
+package core.services;
 
-import Core.Models.exceptions.CustomerException;
-import Core.Models.exceptions.EventException;
-import Core.Models.exceptions.TicketException;
-import Core.Interfaces.TicketServiceInterface;
+import core.models.exceptions.CustomerException;
+import core.models.exceptions.EventException;
+import core.models.exceptions.TicketException;
+import core.interfaces.TicketServiceInterface;
 import java.time.LocalDate;
 import java.util.*;
-import Core.Models.Customer;
-import Core.Models.Event;
-import Core.Models.Ticket;
-import IDGenerator.IDService.IDService;
-import IDGenerator.IDService.IDServiceInterface;
+import java.util.concurrent.ConcurrentHashMap;
+
+import core.models.Event;
+import core.models.Ticket;
+import idGenerator.idService.IDServiceInterface;
 
 public class TicketService implements TicketServiceInterface {
 
-    private final Map<Long, Ticket> ticketsById = new HashMap<>();
+    private final Map<Long, Ticket> ticketsById = new ConcurrentHashMap<>();
     private CustomerService customerService;
     private EventService eventService;
     private final IDServiceInterface idService;
@@ -50,7 +50,16 @@ public class TicketService implements TicketServiceInterface {
 
     @Override
     public List<Ticket> getAllTickets() {
-        return new ArrayList<>(ticketsById.values());
+        List<Ticket> allTickets = new ArrayList<>();
+        for(long ticketId : ticketsById.keySet()){
+            try {
+                allTickets.add(getTicketById(ticketId));
+            } catch (TicketException ticketException){
+                System.out.println("Fehler beim Ziehen eines Tickets");
+            }
+        }
+        return allTickets;
+        //return new ArrayList<>(ticketsById.values());
     }
 
     @Override
@@ -100,17 +109,6 @@ public class TicketService implements TicketServiceInterface {
             throw TicketException.maximumNumberOfTickets();
         }
 
-    }
-
-    @Override
-    public boolean verifyTicket(long id) {
-        Ticket ticket = ticketsById.get(id);
-        if (ticket == null) return false;
-
-        Customer customer = customerService.getCustomerById(ticket.getCustomerId());
-        Event event = eventService.getEventById(ticket.getEventId());
-
-        return customer != null && event != null;
     }
 
     private void saveTicket(Ticket ticket) throws TicketException {

@@ -1,4 +1,4 @@
-package Core.Models.exceptions;
+package core.models.exceptions;
 
 public class TicketException extends Exception {
     public static final String noTicketsAvailable = "No tickets available for event";

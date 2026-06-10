@@ -1,9 +1,9 @@
-package Core.Interfaces;
+package core.interfaces;
 
-import Core.Models.exceptions.TicketException;
+import core.models.exceptions.TicketException;
 import java.util.List;
-import java.util.UUID;
-import Core.Models.Ticket;
+
+import core.models.Ticket;
 
 public interface TicketServiceInterface {
     Ticket createTicket(long customerId, long eventId)
@@ -12,5 +12,4 @@ public interface TicketServiceInterface {
     List<Ticket> getAllTickets();
     void deleteTicket(long id) throws IllegalArgumentException;
     void deleteAllTickets();
-    boolean verifyTicket(long id);
 }

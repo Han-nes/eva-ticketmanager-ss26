@@ -1,6 +1,6 @@
-package IDGenerator.PrimeNumberGenerator;
+package idGenerator.primeNumberGenerator;
 
-public class PrimeNumberGenerator {
+public class PrimeNumberGenerator implements PrimeNumberGeneratorInterface{
     private final long lowerLimit;
     private final long upperLimit;
 
@@ -11,7 +11,7 @@ public class PrimeNumberGenerator {
 
     public boolean isPrime(long number) {
         if (number <= 1) return false;
-        for (long i = 2; i < Math.sqrt(number); i++) {
+        for (long i = 2; i <= Math.sqrt(number); i++) {
             if (number % i == 0) return false;
         }
         return true;
@@ -24,6 +24,7 @@ public class PrimeNumberGenerator {
             possiblePrimeNumber = (long) (Math.random() * (upperLimit - lowerLimit + 1)) + lowerLimit;
             randomTries++;
         }
+        if(randomTries == (upperLimit - lowerLimit)) PrimeNumberGeneratorException.maximumTriesReached();
         return possiblePrimeNumber;
     }
 }

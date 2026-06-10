@@ -4,13 +4,12 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.UUID;
 
-import Core.Models.exceptions.CustomerException;
-import Core.Models.Customer;
-import Core.Services.CustomerService;
-import Core.Services.TicketService;
-import IDGenerator.IDService.IDService;
+import core.models.exceptions.CustomerException;
+import core.models.Customer;
+import core.services.CustomerService;
+import core.services.TicketService;
+import idGenerator.idService.IDService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -132,6 +131,25 @@ class CustomerServiceTest {
             // Assert
             assertNotNull(customer);
             assertEquals(username, customer.getUsername());
+        }
+
+        @Test
+        @DisplayName("Shouldn't be able to change Customer with Create-Reference")
+        void shouldNotBeAbleToChangeCustomerWithCreate(){
+            final String mail = "test@mail.de";
+            final String name = "richtiger Name";
+            final LocalDate dateOfBirth = LocalDate.now().minusYears(28);
+
+            //Arrange
+            Customer customer = customerService.createCustomer(name, mail, dateOfBirth);
+            customer.setEmail("falsche@mail.de");
+            customer.setUsername("falscher Name");
+            customer.setDateOfBirth(LocalDate.now().minusYears(999));
+
+            //Assert
+            assertEquals(mail, customerService.getCustomerById(customer.getId()).getEmail());
+            assertEquals(name, customerService.getCustomerById(customer.getId()).getUsername());
+            assertEquals(dateOfBirth, customerService.getCustomerById(customer.getId()).getDateOfBirth());
         }
     }
 

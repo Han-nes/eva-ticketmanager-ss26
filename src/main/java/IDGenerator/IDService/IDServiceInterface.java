@@ -1,6 +1,8 @@
-package IDGenerator.IDService;
+package idGenerator.idService;
 
 public interface IDServiceInterface {
 
-    public long getUnusedId();
+    long getUnusedId();
+
+    void clearIdStore();
 }

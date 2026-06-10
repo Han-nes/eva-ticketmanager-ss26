@@ -1,11 +1,10 @@
-package Core.Models;
+package core.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.UUID;
 
 public class Customer {
 
