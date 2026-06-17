@@ -47,6 +47,33 @@ class TCPHostTest {
     }
 
     @Test
+    @DisplayName("Should handle two clients with same Services")
+    void shouldHandleTwoClientsWithSameServices() throws IOException {
+        Socket secondClientSocket = new Socket("localHost2", 8082);
+        BufferedReader secondClientIn =
+                new BufferedReader(
+                        new InputStreamReader(clientSocket.getInputStream())
+                );;
+        PrintWriter secondClientOut = new PrintWriter(clientSocket.getOutputStream(), true);
+
+        //Arrange
+        String request = "customer;create;handler_user,handler@example.com,2000-01-01";
+
+        // Act
+        out.println(request);
+
+        secondClientOut.println("customer;getall;");
+        String responseSecondClient = secondClientIn.readLine();
+
+        // Assert
+        assertNotNull(responseSecondClient);
+        assertTrue(responseSecondClient.contains("handler_user"));
+        assertTrue(responseSecondClient.contains("handler@example.com"));
+
+
+    }
+
+    @Test
     @DisplayName("Should handle customer create request")
     void shouldHandleCustomerCreateRequest() throws IOException {
         // Arrange

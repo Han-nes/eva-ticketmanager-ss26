@@ -1,4 +1,4 @@
-package tcp;
+package formatter;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -7,6 +7,11 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 import core.models.Customer;
 import core.models.Event;
+import core.services.CustomerService;
+import core.services.EventService;
+import core.services.TicketService;
+import idGenerator.idService.IDService;
+import org.checkerframework.checker.units.qual.C;
 import tcp.server.RequestHandler;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -20,7 +25,13 @@ class RequestHandlerTest {
 
     @BeforeEach
     void setUp() {
-        requestHandler = new RequestHandler();
+        IDService idService = new IDService(10000L, 99999L);
+        TicketService ticketService = new TicketService(idService);
+        CustomerService customerService = new CustomerService(ticketService, idService);
+        EventService eventService = new EventService(ticketService, idService);
+        ticketService.setCustomerService(customerService);
+        ticketService.setEventService(eventService);
+        requestHandler = new RequestHandler(ticketService, customerService, eventService);
     }
 
     @Nested

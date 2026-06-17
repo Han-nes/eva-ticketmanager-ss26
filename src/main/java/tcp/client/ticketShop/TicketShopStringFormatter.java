@@ -34,8 +34,8 @@ public class TicketShopStringFormatter {
         return String.format(
                 "Event{id=%s,name='%s',location='%s',time=%s,ticketsAvailable=%s,ticketsSold=%s}",
                 event.getId(),
-                event.getLocation(),
                 event.getName(),
+                event.getLocation(),
                 event.getTime(),
                 event.getTicketsAvailable(),
                 event.getTicketsSold()

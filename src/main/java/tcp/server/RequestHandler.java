@@ -17,13 +17,10 @@ public class RequestHandler {
     private final CustomerService customerService;
     private final TicketService ticketService;
 
-    public RequestHandler() {
-        IDService idService = new IDService(10000L, 99999L);
-        this.ticketService = new TicketService(idService);
-        this.customerService = new CustomerService(ticketService, idService);
-        this.eventService = new EventService(ticketService, idService);
-        ticketService.setCustomerService(customerService);
-        ticketService.setEventService(eventService);
+    public RequestHandler(TicketService ticketService, CustomerService customerService, EventService eventService) {
+        this.ticketService = ticketService;
+        this.customerService = customerService;
+        this.eventService = eventService;
     }
 
     public String callMethodRemotely(String string) throws Exception {
@@ -57,8 +54,8 @@ public class RequestHandler {
                 ) throw new IllegalArgumentException("Missing arguments");
                 return TicketShopStringFormatter.customerToString(customerService
                         .createCustomer(
-                                methodArguments[1],
                                 methodArguments[0],
+                                methodArguments[1],
                                 LocalDate.parse(methodArguments[2])
                         ));
             }
